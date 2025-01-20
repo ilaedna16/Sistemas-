@@ -1,9 +1,8 @@
 body {
   font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
   margin: 0;
   padding: 0;
-  background-color: #121212;
-  color: #ffffff;
 }
 
 .app {
@@ -11,47 +10,53 @@ body {
   padding: 20px;
 }
 
-header {
-  background-color: #1e1e1e;
-  padding: 10px 0;
+.search-bar {
   margin-bottom: 20px;
 }
 
-header h1 {
-  color: #f4c10f;
-  margin: 0;
+.search-bar input {
+  padding: 10px;
+  width: 300px;
+  font-size: 16px;
 }
 
-h2 {
-  margin: 20px 0 10px;
+.search-bar button {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin-left: 10px;
+  cursor: pointer;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  margin: 20px 0;
+.error {
+  color: red;
 }
 
-.card {
-  background-color: #1e1e1e;
-  border-radius: 10px;
-  overflow: hidden;
-  text-align: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+.artist-info {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  display: inline-block;
+  text-align: left;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  margin: auto;
 }
 
-.card img {
+.artist-info h2 {
+  margin-top: 0;
+}
+
+.artist-image {
   width: 100%;
   height: auto;
+  margin-top: 20px;
+  border-radius: 8px;
 }
 
-.card h3 {
-  font-size: 16px;
-  margin: 10px 0 5px;
+.artist-info p {
+  margin: 10px 0;
 }
 
-.card p {
-  margin: 0 0 10px;
-  color: #f4c10f;
+.image-container {
+  margin-top: 20px;
 }
