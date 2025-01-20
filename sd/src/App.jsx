@@ -15,8 +15,9 @@ const App = () => {
     try {
       // Buscar artista no MusicBrainz
       const response = await fetch(
-        https://musicbrainz.org/ws/2/artist/?query=artist:${searchQuery}&fmt=json
+        `https://musicbrainz.org/ws/2/artist/?query=artist:${searchQuery}&fmt=json`
       );
+      if (!response.ok) throw new Error('Erro ao buscar dados.');
       const data = await response.json();
 
       if (data.artists.length === 0) {
@@ -29,38 +30,39 @@ const App = () => {
 
       // Obter relações de URL do artista
       const artistResponse = await fetch(
-        https://musicbrainz.org/ws/2/artist/${artist.id}?inc=url-rels&fmt=json
+        `https://musicbrainz.org/ws/2/artist/${artist.id}?inc=url-rels&fmt=json`
       );
+      if (!artistResponse.ok) throw new Error('Erro ao buscar detalhes do artista.');
       const artistDetails = await artistResponse.json();
 
       // Inicializar dados adicionais
       let imageUrl = '';
       let biography = '';
       let genre = artist.gender || 'Não disponível';
-      let birthDate = artist['life-span'].begin || 'Não disponível';
-      let deathDate = artist['life-span'].end || null;
+      let birthDate = artist['life-span']?.begin || 'Não disponível';
+      let deathDate = artist['life-span']?.end || null;
 
       // Verificar relações de URL
       if (artistDetails.relations) {
         for (const rel of artistDetails.relations) {
           if (rel.type === 'wikidata') {
-            // Obter imagem do Wikidata
             const wikidataId = rel.url.resource.split('/').pop();
             const wikidataResponse = await fetch(
-              https://www.wikidata.org/wiki/Special:EntityData/${wikidataId}.json
+              `https://www.wikidata.org/wiki/Special:EntityData/${wikidataId}.json`
             );
+            if (!wikidataResponse.ok) continue;
             const wikidataData = await wikidataResponse.json();
             const entity = wikidataData.entities[wikidataId];
-            if (entity && entity.claims && entity.claims.P18) {
+            if (entity?.claims?.P18) {
               const imageName = entity.claims.P18[0].mainsnak.datavalue.value;
-              imageUrl = https://commons.wikimedia.org/wiki/Special:FilePath/${imageName};
+              imageUrl = `https://commons.wikimedia.org/wiki/Special:FilePath/${imageName}`;
             }
           } else if (rel.type === 'wikipedia') {
-            // Obter biografia da Wikipedia em português
             const wikiTitle = rel.url.resource.split('/').pop();
             const wikipediaResponse = await fetch(
-              https://pt.wikipedia.org/api/rest_v1/page/summary/${wikiTitle}
+              `https://pt.wikipedia.org/api/rest_v1/page/summary/${wikiTitle}`
             );
+            if (!wikipediaResponse.ok) continue;
             const wikipediaData = await wikipediaResponse.json();
             if (wikipediaData.extract) {
               biography = wikipediaData.extract;
@@ -71,8 +73,7 @@ const App = () => {
 
       // Traduzir ou ajustar gênero e data de nascimento
       genre = genre === 'male' ? 'Masculino' : genre === 'female' ? 'Feminino' : genre;
-      birthDate = birthDate === 'Não disponível' ? 'Data de nascimento não disponível' : birthDate;
-      deathDate = deathDate ? Data de falecimento: ${deathDate} : null;
+      deathDate = deathDate ? `Data de falecimento: ${deathDate}` : null;
 
       // Atualizar estado com dados do artista
       setArtistData({
@@ -114,7 +115,7 @@ const App = () => {
               {artistData.imageUrl !== 'Imagem não disponível.' ? (
                 <img
                   src={artistData.imageUrl}
-                  alt={Imagem de ${artistData.name}}
+                  alt={`Imagem de ${artistData.name}`}
                   className="artist-image"
                 />
               ) : (
@@ -132,4 +133,4 @@ const App = () => {
   );
 };
 
-export default App
+export default App;
